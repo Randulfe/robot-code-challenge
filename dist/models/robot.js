@@ -22,9 +22,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RobotModel = void 0;
 var mongoose_1 = __importStar(require("mongoose"));
 var robotSchema = new mongoose_1.Schema({
-    x: { type: Number, required: true, unique: true },
-    y: { type: Number, required: true, unique: true },
-    o: { type: String, required: true, unique: true },
-    planet: { type: mongoose_1.Schema.Types.ObjectId, required: false, unique: true },
+    x: { type: Number, required: true },
+    y: { type: Number, required: true },
+    o: { type: String, required: true },
+    lost: { type: String, required: false },
+    planet: { type: mongoose_1.Schema.Types.ObjectId, required: true },
 });
 exports.RobotModel = mongoose_1.default.model('robots', robotSchema);

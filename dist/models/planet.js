@@ -22,7 +22,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PlanetModel = void 0;
 var mongoose_1 = __importStar(require("mongoose"));
 var planetSchema = new mongoose_1.Schema({
-    x: { type: Number, required: true, unique: true },
-    y: { type: Number, required: true, unique: true },
+    x: { type: Number },
+    y: { type: Number },
 });
 exports.PlanetModel = mongoose_1.default.model('planets', planetSchema);

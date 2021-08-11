@@ -44,56 +44,82 @@ var helmet = require('helmet');
 var mongoose_1 = __importDefault(require("mongoose"));
 var planet_1 = require("./models/planet");
 var robot_1 = require("./models/robot");
+var runInstructions_1 = require("./runInstructions");
+var processData_1 = require("./processData");
 var DATABASE = 'mongodb://localhost:27017/Robots';
 var PORT = 4300;
 var app = express_1.default();
 app.use(helmet());
 // Body parser
 app.use(express_1.default.json());
-app.post('/input', function (req, res) {
-    // Get string of input and separate each line
-    var input = req.body.data;
-    var instructions = input.split('\n');
-    // Create world of x y size
-    var planetDimensions = instructions[0].split(' ');
-    planetDimensions = planetDimensions.filter(function (e) { return e; });
-    console.log(planetDimensions);
-    var planet = new planet_1.PlanetModel();
-    planet.x = parseInt(planetDimensions[0]);
-    planet.y = parseInt(planetDimensions[1]);
-    // save planet in db
-    planet.save(function (err, savedPlanet) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            // eslint-disable-next-line max-len
-            if (err)
-                return [2 /*return*/, res.status(500).send({ message: 'Error adding planet to the database' })];
-            console.log('planet added');
-            return [2 /*return*/];
-        });
-    }); });
-    // LOOP OVER THIS
-    // Create robot in x y o inside z planet
-    var robotValues = instructions[1].split(' ');
-    robotValues = robotValues.filter(function (e) { return e; });
-    var robot = new robot_1.RobotModel();
-    console.log(robotValues);
-    robot.x = parseInt(robotValues[0]);
-    robot.y = parseInt(robotValues[1]);
-    robot.o = robotValues[2];
-    console.log(robot);
-    robot.save(function (err, savedRobot) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            // eslint-disable-next-line max-len
-            if (err)
-                return [2 /*return*/, res.status(500).send({ message: err })];
-            console.log('robot added');
-            return [2 /*return*/, res.status(200).send(savedRobot)];
-        });
-    }); });
-    // Read set of instructions and calculate end postion
-    // Update robot state in the planet
-    // repeat
-});
+app.post('/input', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var input, data, planet, createdPlanet, _i, _a, singleRobot, robot, createdRobot, e_1, e_2;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                input = req.body.data;
+                data = processData_1.processData(input);
+                planet = new planet_1.PlanetModel();
+                planet.x = data.planet[0];
+                planet.y = data.planet[1];
+                _b.label = 1;
+            case 1:
+                _b.trys.push([1, 9, , 10]);
+                return [4 /*yield*/, planet.save()];
+            case 2:
+                createdPlanet = _b.sent();
+                _i = 0, _a = data.robots;
+                _b.label = 3;
+            case 3:
+                if (!(_i < _a.length)) return [3 /*break*/, 8];
+                singleRobot = _a[_i];
+                robot = new robot_1.RobotModel();
+                robot.x = singleRobot[0];
+                robot.y = singleRobot[1];
+                robot.o = singleRobot[2];
+                robot.planet = createdPlanet._id;
+                _b.label = 4;
+            case 4:
+                _b.trys.push([4, 6, , 7]);
+                return [4 /*yield*/, robot.save()];
+            case 5:
+                createdRobot = _b.sent();
+                // Read set of instructions and calculate end postion
+                createdRobot = runInstructions_1.runCommands(createdPlanet, createdRobot, singleRobot[3]);
+                createdRobot.save();
+                return [3 /*break*/, 7];
+            case 6:
+                e_1 = _b.sent();
+                return [2 /*return*/, res.status(500).send({ message: 'error saving robot', error: e_1 })];
+            case 7:
+                _i++;
+                return [3 /*break*/, 3];
+            case 8: return [2 /*return*/, res.status(200).send({ message: 'Finished' })];
+            case 9:
+                e_2 = _b.sent();
+                return [2 /*return*/, res.status(500).send({ message: 'error saving planet', error: e_2 })];
+            case 10: return [2 /*return*/];
+        }
+    });
+}); });
+app.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var result, lost, planetsNumber;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, robot_1.RobotModel.aggregate([{ $match: {} }, { $group: { _id: '$planet', count: { $sum: 1 } } }])];
+            case 1:
+                result = _a.sent();
+                return [4 /*yield*/, robot_1.RobotModel.aggregate([{ $match: { lost: 'LOST' } }, { $group: { _id: '$planet', count: { $sum: 1 } } }])];
+            case 2:
+                lost = _a.sent();
+                return [4 /*yield*/, planet_1.PlanetModel.count()];
+            case 3:
+                planetsNumber = _a.sent();
+                // eslint-disable-next-line max-len
+                return [2 /*return*/, res.status(200).send({ total_planets: planetsNumber, robots_per_planet: result, robots_lost_per_planet: lost })];
+        }
+    });
+}); });
 // eslint-disable-next-line max-len
 mongoose_1.default.connect(DATABASE, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 // Get notified if we got connected successfully or not
