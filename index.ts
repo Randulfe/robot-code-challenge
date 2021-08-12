@@ -11,7 +11,7 @@ import {processData} from './processData';
 const DATABASE:string = 'mongodb://localhost:27017/Robots';
 const PORT:Number = 4300;
 
-const app = express();
+export const app = express();
 
 app.use(helmet());
 
@@ -74,7 +74,9 @@ db.on('error', console.error.bind(console, 'connection error'));
 db.once('open', function() {
   console.log('Successful conection to the database');
 
-  app.listen(PORT, ()=>{
+  const server = app.listen(PORT, ()=>{
     console.log(`server starting on PORT: ${PORT}`);
   });
+  module.exports = server;
 });
+

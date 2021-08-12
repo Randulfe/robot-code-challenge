@@ -1,6 +1,6 @@
 import {Response} from 'express';
 
-export const processData = function(res:Response, str:string) {
+export const processData = function(res:any, str:string) {
   const data:any = {};
   const orientations = ['N', 'W', 'S', 'E'];
   const instructions:Array<string> = str.split('\n');
@@ -24,8 +24,9 @@ export const processData = function(res:Response, str:string) {
       // instructions
       let orders:Array<string> = instructions[i].split('');
       orders = orders.filter((e)=>e != ' ');
-      if(orders.length >100 || orders.length==-1){
-          return res.status(400).send({message: 'Instruction string must be between 1 and 100 characters'});
+      if (orders.length >100 || orders.length==-1) {
+        // eslint-disable-next-line max-len
+        return res.status(400).send({message: 'Instruction string must be between 1 and 100 characters'});
       }
       data.robots[(i/2)-1].push(orders );
     } else {
@@ -49,6 +50,5 @@ export const processData = function(res:Response, str:string) {
       data.robots[i/2-0.5].push( robotValues[2] );
     }
   }
-  console.log(data);
   return data;
 };

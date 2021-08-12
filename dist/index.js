@@ -39,6 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.app = void 0;
 var express_1 = __importDefault(require("express"));
 var helmet = require('helmet');
 var mongoose_1 = __importDefault(require("mongoose"));
@@ -48,17 +49,17 @@ var runInstructions_1 = require("./runInstructions");
 var processData_1 = require("./processData");
 var DATABASE = 'mongodb://localhost:27017/Robots';
 var PORT = 4300;
-var app = express_1.default();
-app.use(helmet());
+exports.app = express_1.default();
+exports.app.use(helmet());
 // Body parser
-app.use(express_1.default.json());
-app.post('/input', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+exports.app.use(express_1.default.json());
+exports.app.post('/input', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var input, data, planet, createdPlanet, _i, _a, singleRobot, robot, createdRobot, e_1, e_2;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 input = req.body.data;
-                data = processData_1.processData(input);
+                data = processData_1.processData(res, input);
                 planet = new planet_1.PlanetModel();
                 planet.x = data.planet[0];
                 planet.y = data.planet[1];
@@ -102,7 +103,7 @@ app.post('/input', function (req, res) { return __awaiter(void 0, void 0, void 0
         }
     });
 }); });
-app.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+exports.app.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var result, lost, planetsNumber;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -127,7 +128,8 @@ var db = mongoose_1.default.connection;
 db.on('error', console.error.bind(console, 'connection error'));
 db.once('open', function () {
     console.log('Successful conection to the database');
-    app.listen(PORT, function () {
+    var server = exports.app.listen(PORT, function () {
         console.log("server starting on PORT: " + PORT);
     });
+    module.exports = server;
 });
