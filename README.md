@@ -1,5 +1,12 @@
 # Interstellar Robots
 
+### Table of contents
+
+- [The premise](#The-premise)
+- [Requirements](#Requirements)
+- [Input](#Input)
+- [Testing](#Testing)
+
 ### The premise
 
 The surface of planet can be modelled by a rectangular grid around which robots are able to move according to instructions provided from Earth. You are to write a program that determines each sequence of robot positions and reports the final position of the robot.
