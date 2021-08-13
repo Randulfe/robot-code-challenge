@@ -62,7 +62,7 @@ Meaning of each parameter:
 
 ## Stats
 
-To check how many robots there are on each planet, how many of them ended up lost and how many planets there are you simply have to make a **GET** request to the following endpoint: ````http://localhost:4300```
+To check how many robots there are on each planet, how many of them ended up lost and how many planets there are you simply have to make a **GET** request to the following endpoint: ```http://localhost:4300```
 
 ## Testing
 
