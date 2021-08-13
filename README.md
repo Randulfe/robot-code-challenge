@@ -4,7 +4,9 @@
 
 - [The premise](#The-premise)
 - [Requirements](#Requirements)
+- [Running the server](#Running-the-server)
 - [Input](#Input)
+- [Stats](#Stats)
 - [Testing](#Testing)
 
 ### The premise
@@ -29,6 +31,15 @@ Since the grid is rectangular and bounded (...yes it is a strange planet), a rob
 
 This small back-end app interacts with a MongoDB database named **Robots** running on the default MongoDB port ```27017```. This database should contain two collections, one named **planets** and the other named **robots**.
 
+## Running the server
+To run the server in order to make the **POST** request to add planets, robots and move them around and to get the stats with **GET** follow this instructions: 
+- Close the repo
+- Run ```npm install```
+- Run ```npm run build```
+- Run ```npm start```
+
+You are ready to make your API requests !
+
 ## Input
 
 For this back-end project, you should pass the input with the following structure: 
@@ -47,7 +58,11 @@ Meaning of each parameter:
 - **ROBOT[NUMBER]_X, ROBOT[NUMBER]_Y** : starting x y positions of that specific robot in the planet
 - **ROBOT[NUMBER]_O** : starting orientation of the robot (N,E,S,W)
 - **ROBOT[NUMBER]_INSTRUCTIONS** : string of characters of instructions to execute to move the robot. They can either be L (for turn to the left for instance North to West), R(turn to the right for instance North to East), F(move forward towards robot's directions one square)
-- **\n** : as instructions would naturally come from the front-end separated by a different line I am using the line breaker ```\n``` to divide the string into smaller chunks. 
+- **\n** : as instructions would naturally come from the front-end separated by a different line I am using the line breaker ```\n``` to divide the string into smaller chunks.
+
+## Stats
+
+To check how many robots there are on each planet, how many of them ended up lost and how many planets there are you simply have to make a **GET** request to the following endpoint: ````http://localhost:4300```
 
 ## Testing
 
