@@ -16,8 +16,3 @@ describe('check that robot displacements are executed correctly', ()=>{
     expect(response).toMatchObject(output);
   });
 });
-
-
-// ADD TEST FOR THE GENERAL THING OF EVERYTHING
-// DOCKERIZE
-// CREATE README

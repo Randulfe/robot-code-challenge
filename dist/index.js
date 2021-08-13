@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.app = void 0;
+exports.server = exports.app = void 0;
 var express_1 = __importDefault(require("express"));
 var helmet = require('helmet');
 var mongoose_1 = __importDefault(require("mongoose"));
@@ -54,7 +54,7 @@ exports.app.use(helmet());
 // Body parser
 exports.app.use(express_1.default.json());
 exports.app.post('/input', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var input, data, planet, createdPlanet, _i, _a, singleRobot, robot, createdRobot, e_1, e_2;
+    var input, data, planet, createdPlanet, robots, _i, _a, singleRobot, robot, createdRobot, e_1, e_2;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -69,6 +69,7 @@ exports.app.post('/input', function (req, res) { return __awaiter(void 0, void 0
                 return [4 /*yield*/, planet.save()];
             case 2:
                 createdPlanet = _b.sent();
+                robots = [];
                 _i = 0, _a = data.robots;
                 _b.label = 3;
             case 3:
@@ -88,6 +89,7 @@ exports.app.post('/input', function (req, res) { return __awaiter(void 0, void 0
                 // Read set of instructions and calculate end postion
                 createdRobot = runInstructions_1.runCommands(createdPlanet, createdRobot, singleRobot[3]);
                 createdRobot.save();
+                robots.push(robot);
                 return [3 /*break*/, 7];
             case 6:
                 e_1 = _b.sent();
@@ -95,7 +97,9 @@ exports.app.post('/input', function (req, res) { return __awaiter(void 0, void 0
             case 7:
                 _i++;
                 return [3 /*break*/, 3];
-            case 8: return [2 /*return*/, res.status(200).send({ message: 'Finished' })];
+            case 8: 
+            // eslint-disable-next-line max-len
+            return [2 /*return*/, res.status(200).send({ message: 'Finished', robots: robots, planet: planet })];
             case 9:
                 e_2 = _b.sent();
                 return [2 /*return*/, res.status(500).send({ message: 'error saving planet', error: e_2 })];
@@ -126,10 +130,10 @@ mongoose_1.default.connect(DATABASE, { useNewUrlParser: true, useUnifiedTopology
 // Get notified if we got connected successfully or not
 var db = mongoose_1.default.connection;
 db.on('error', console.error.bind(console, 'connection error'));
-db.once('open', function () {
+exports.server = db.once('open', function () {
     console.log('Successful conection to the database');
-    var server = exports.app.listen(PORT, function () {
+    exports.app.listen(PORT, function () {
         console.log("server starting on PORT: " + PORT);
     });
-    module.exports = server;
+    module.exports = exports.server;
 });

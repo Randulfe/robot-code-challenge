@@ -14,13 +14,9 @@ describe('check that robot displacements are executed correctly', function () {
     createdRobot.planet = createdPlanet._id;
     var orders = ['F', 'F', 'R', 'F', 'L', 'F'];
     // eslint-disable-next-line max-len
-    var output = { x: 2, y: 3, o: 'N' };
+    var output = { x: 1, y: 3, o: 'N' };
     it('should return the right position of the robots', function () {
         var response = runInstructions_1.runCommands(createdPlanet, createdRobot, orders);
         expect(response).toMatchObject(output);
     });
 });
-// GET THE RIGHT EXPECT AND CLEAR CONSOLE FOR THIS TEST
-// ADD TEST FOR THE GENERAL THING OF EVERYTHING
-// DOCKERIZE
-// CREATE README

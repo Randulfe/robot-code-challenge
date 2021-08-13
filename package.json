@@ -4,7 +4,7 @@
   "description": "Interstellar robot assignment using express and mongodb (back-end)",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test jest  --config ./jest.config.js --verbose --silent",
+    "test": "cross-env NODE_ENV=test jest  --config ./jest.config.js --verbose",
     "lint": "npx run index.ts",
     "build": "tsc --project ./",
     "start": "cross-env NODE_ENV=production node ./dist/index.js"

@@ -1,8 +1,10 @@
 import {Robot} from './models/robot';
 import {Planet} from './models/planet';
 
+// perform robot movements
 // eslint-disable-next-line max-len
 export const runCommands = function(createdPlanet:Planet, createdRobot:Robot, orders:Array<string>) {
+  // orientation matrix
   const directions:Array<string> = ['N', 'E', 'S', 'W'];
   // Get index in orientation matrix
   let robotOrientation = directions.indexOf(createdRobot.o);

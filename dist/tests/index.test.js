@@ -39,24 +39,44 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// ADD TEST FOR THE GENERAL THING OF EVERYTHING
+// DOCKERIZE
+// CREATE README
 var index_1 = require("../index");
-var mongoose_1 = __importDefault(require("mongoose"));
 var supertest_1 = __importDefault(require("supertest"));
+var mongoose_1 = __importDefault(require("mongoose"));
 var api = supertest_1.default(index_1.app);
-describe('Test moving the robot', function () {
-    it('should return an array of robots created', function () { return __awaiter(void 0, void 0, void 0, function () {
-        var instructions;
+describe('POST create planet and robots from instruction set', function () {
+    var input = { data: '5 3 \n 0 0 N \n FFRLFF \n 1 1 S \n RF' };
+    var robots = [{ x: 0, y: 4, o: 'N' }, { x: 0, y: 1, o: 'W' }];
+    var planet = { x: 5, y: 3 };
+    it('should return created robots and planets', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    instructions = {
-                        data: '5 3 \n 0 0 N \n RFFLFF \n 1 1 S \n LLFFFRL \n 0 3 W \n LLFFFLFLFL',
-                    };
-                    return [4 /*yield*/, api.post('/input').send(instructions)
-                            .expect(200)
-                            .expect('Content-Type', /application\/json/)];
+                case 0: return [4 /*yield*/, api.post('/input').send(input).expect(200).expect('Content-Type', /application\/json/)];
                 case 1:
-                    _a.sent();
+                    response = _a.sent();
+                    expect(response.body.message).toEqual('Finished');
+                    expect(response.body.planet).toMatchObject(planet);
+                    expect(response.body.robots[0]).toMatchObject(robots[0]);
+                    expect(response.body.robots[1]).toMatchObject(robots[1]);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+});
+describe('GET stats for the total amount of robots and planets', function () {
+    it('should return a nested object with stats', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, api.get('/').expect(200).expect('Content-Type', /application\/json/)];
+                case 1:
+                    response = _a.sent();
+                    expect(response.body.total_planets).toEqual(1);
+                    expect(response.body.robots_per_planet[0]).toMatchObject({ count: 2 });
+                    expect(response.body.robots_lost_per_planet[0]).toMatchObject({ count: 1 });
                     return [2 /*return*/];
             }
         });
@@ -64,5 +84,5 @@ describe('Test moving the robot', function () {
 });
 afterAll(function () {
     mongoose_1.default.connection.close();
-    // server.close();
+    index_1.server.close();
 });
